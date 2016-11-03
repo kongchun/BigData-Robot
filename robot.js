@@ -2,48 +2,11 @@ var loader = require('./loader.js');
 var cheerio = require('cheerio');
 var db = require('./db.js');
 var url = "http://dataunion.org";
+var Helper = require("./helper.js")
 
 var dbTable = "articles"; //数据库
 
-var Helper = {
-	arrayToMatrix: function(arr, limit) {
-		var max = arr.length;
 
-		if (limit == 0 || limit > max) {
-			limit = max;
-		}
-		var stepSize = Math.ceil(max / limit);
-		var list = [];
-		var count = 0;
-		for (let i = 0; i < stepSize; i++) {
-			var arrItem = [];
-			for (let j = 0; j < limit; j++) {
-				if (count < max) {
-					arrItem.push(arr[count++])
-				}
-			}
-			list.push(arrItem);
-		}
-		return list;
-	},
-	iteratorArr: function(arr, promiseCallback) {
-		var it = arr[Symbol.iterator]();
-		var list = [];
-
-		return x(it.next());
-
-		function x(item) {
-			if (item.done) {
-				return Promise.resolve(list);
-			}
-			return promiseCallback(item.value).then(function(value) {
-				return list.push(value);
-			}).then(function() {
-				return x(it.next());
-			}).catch(Promise.reject)
-		}
-	}
-}
 
 var Page = {
 	loadAll: function() {
@@ -170,6 +133,8 @@ var Article = {
 			var html = contentText.html().replace(/[\r\n]/ig, "");
 			var thumbnail = ($(".content-text img").attr("src"));
 			thumbnail = (thumbnail ? thumbnail : "");
+			var isNew = true;
+			var createDate = new Date();
 			var abstract = "",
 				similar = ""
 			return Promise.resolve({
@@ -180,7 +145,9 @@ var Article = {
 				abstract,
 				similar,
 				html,
-				thumbnail
+				thumbnail,
+				isNew,
+				createDate
 			})
 		})
 	},
@@ -237,6 +204,18 @@ var Article = {
 
 		return find();
 
+	},
+
+	loadUpdateNew: function() {
+		return db.open(dbTable).then(function(collection) {
+			collection.updateMany({
+				isNew: true
+			}, {
+				$set: {
+					isNew: false
+				}
+			})
+		})
 	}
 
 }
@@ -252,7 +231,9 @@ var Robot = {
 		})
 	},
 	updateArticle: function() {
-		Article.loadUpdateURI().then(function() {
+		Article.loadUpdateNew().then(function() {
+			return Article.loadUpdateURI()
+		}).then(function() {
 			return Article.load()
 		}).catch(function(e) {
 			console.log(e);

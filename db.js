@@ -123,13 +123,16 @@ db.open("url").then(function(collection) {
 
 })
 */
-
 // var db = new DB;
 // db.open("articles").then(function(collection) {
-// 	return collection.find({}).count()
+// 	return collection.findOne({})
 
-// }).then(function(data) {
-// 	console.log(data)
+// }).then(function(json) {
+
+// 	console.log(json.createDate)
+// 	console.log(new Date(json.createDate).toLocaleString())
+// 	console.log(new Date().toLocaleString())
+// 	db.colse()
 // })
 
 /*
@@ -160,3 +163,12 @@ Page.writer(["A", "B"]).then(function() {
 	console.log(e);
 })
 */
+
+
+// var db = new DB;
+// db.open("articles").then(function(collection) {
+// 	return collection.update()
+
+// }).then(function(data) {
+// 	console.log(data)
+// })
