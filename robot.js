@@ -136,7 +136,8 @@ var Article = {
 			var isNew = true;
 			var createDate = new Date();
 			var abstract = "",
-				similar = ""
+				similar = "",
+				hits = 0
 			return Promise.resolve({
 				url,
 				title,
@@ -147,7 +148,8 @@ var Article = {
 				html,
 				thumbnail,
 				isNew,
-				createDate
+				createDate,
+				hits
 			})
 		})
 	},
