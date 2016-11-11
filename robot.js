@@ -243,9 +243,11 @@ var Robot = {
 	}
 }
 
+
+module.exports = Robot;
 //Robot.updateArticle();
-Robot.updateArticle()
-setInterval(Robot.updateArticle, 24 * 60 * 60 * 1000);
+//Robot.updateArticle()
+//setInterval(Robot.updateArticle, 24 * 60 * 60 * 1000);
 /*
 var url = "http://dataunion.org/26126.html";
 run()
