@@ -4,7 +4,7 @@ var db = require('./db.js');
 var url = "http://dataunion.org";
 var Helper = require("./helper.js")
 
-var dbTable = "articles"; //数据库
+var dbTable = "dataunion"; //数据库
 
 
 
@@ -209,15 +209,16 @@ var Article = {
 	},
 
 	loadUpdateNew: function() {
-		return db.open(dbTable).then(function(collection) {
-			collection.updateMany({
-				isNew: true
-			}, {
-				$set: {
-					isNew: false
-				}
-			})
-		})
+		return Promise.resolve();
+		// db.open(dbTable).then(function(collection) {
+		// 	collection.updateMany({
+		// 		isNew: true
+		// 	}, {
+		// 		$set: {
+		// 			isNew: false
+		// 		}
+		// 	})
+		// })
 	}
 
 }
