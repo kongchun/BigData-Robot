@@ -1,0 +1,14 @@
+{
+	"apps": [{
+		"name": "bigdata_robot", //名称
+		"script": "app.js", //程序入库
+		"cwd": "./", //根目录
+		"env": {
+			"DB_URL": "127.0.0.1"
+		},
+		"watch": true,
+		"error_file": "./logs/app-err.log", //错误输出日志
+		"out_file": "./logs/app-out.log", //日志
+		"log_date_format": "YYYY-MM-DD HH:mm Z" //日期格式
+	}]
+}

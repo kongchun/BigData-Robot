@@ -1,12 +1,11 @@
-var loader = require('./loader.js');
-var cheerio = require('cheerio');
-var db = require('./db.js');
+var DB_URL = process.env.DB_URL || '127.0.0.1';
+var map = require("../iRobots/baidu.js");
+var loader = require('../iRobots/loader.js');
+var Helper = require('../iRobots/helper.js');
+var db = require('../iRobots/db.js')(DB_URL, "bigdata");
+
 var url = "http://dataunion.org";
-var Helper = require("./helper.js")
-
 var dbTable = "dataunion"; //数据库
-
-
 
 var Page = {
 	loadAll: function() {
@@ -20,6 +19,7 @@ var Page = {
 				})
 			})
 		}).then(function(list) {
+			db.close();
 			console.log("finish")
 		}).catch(function(e) {
 			console.log(e)
@@ -44,14 +44,14 @@ var Page = {
 		return "http://dataunion.org/page/" + page;
 	},
 	getPageSize: function(url) {
-		return loader(url).then(function($) {
+		return loader.getDOM(url).then(function($) {
 			var max = ($("a.page-numbers[title='最末页']").text());
 			return Promise.resolve(max);
 		});
 	},
 	getURIByPage: function(url) {
 		console.log("load", url);
-		return loader(url).then(function($) {
+		return loader.getDOM(url).then(function($) {
 			var arr = [];
 			$("#main section h2 a").each(function(i, item) {
 				arr.push($(item).attr("href"));
@@ -97,8 +97,10 @@ var Article = {
 		}).then((list) => {
 			return this.loaderArticles(list)
 		}).then(function() {
+			db.close();
 			console.log("finish")
 		}).catch(function(e) {
+			db.close();
 			console.log(e)
 		})
 	},
@@ -122,7 +124,7 @@ var Article = {
 	},
 
 	getArticle: function(url) {
-		return loader(url).then(function($) {
+		return loader.getDOM(url).then(function($) {
 			var article = $("article.content");
 			var title = article.find(".mscctitle a").text().trim();
 			var tag = [];
@@ -247,102 +249,102 @@ var Robot = {
 
 module.exports = Robot;
 //Robot.updateArticle();
-//Robot.updateArticle()
+//Robot.updateArticle();
 //setInterval(Robot.updateArticle, 24 * 60 * 60 * 1000);
 /*
 var url = "http://dataunion.org/26126.html";
 run()
 */
-function runUpdateHTML() {
-	db.open(dbTable).then(function(collection) {
-		return collection.find({
-			html: null
-		}).sort({
-			id: -1
-		}).limit(1).toArray()
-	}).then(function(arr) {
-		if (arr.length == 0) {
-			console.log("==finish==")
-			throw db.close()
-		}
-		var json = arr[0];
-		return (json);
-	}).then(function(json) {
+// function runUpdateHTML() {
+// 	db.open(dbTable).then(function(collection) {
+// 		return collection.find({
+// 			html: null
+// 		}).sort({
+// 			id: -1
+// 		}).limit(1).toArray()
+// 	}).then(function(arr) {
+// 		if (arr.length == 0) {
+// 			console.log("==finish==")
+// 			throw db.close()
+// 		}
+// 		var json = arr[0];
+// 		return (json);
+// 	}).then(function(json) {
 
-		var url = json.url;
-		return loader(url).then(function($) {
-			var article = $("article.content");
+// 		var url = json.url;
+// 		return loader(url).then(function($) {
+// 			var article = $("article.content");
 
-			var contentText = article.find(".content-text");
-			var content = contentText.text().replace(/[\r\n ]/ig, "");
-			var html = contentText.html().replace(/[\r\n]/ig, "");
-
-
-			return {
-				content,
-				html
-			}
-		}).then(function({
-			content,
-			html
-		}) {
-			console.log("html update:", url)
-
-			return db.collection.update({
-				'url': url
-			}, {
-				$set: {
-					'content': content,
-					'html': html
-				}
-			})
-
-		}).then(function() {
-			runUpdateHTML()
-		})
+// 			var contentText = article.find(".content-text");
+// 			var content = contentText.text().replace(/[\r\n ]/ig, "");
+// 			var html = contentText.html().replace(/[\r\n]/ig, "");
 
 
+// 			return {
+// 				content,
+// 				html
+// 			}
+// 		}).then(function({
+// 			content,
+// 			html
+// 		}) {
+// 			console.log("html update:", url)
 
-	}).catch(function(e) {
-		console.log(e)
-	})
-}
+// 			return db.collection.update({
+// 				'url': url
+// 			}, {
+// 				$set: {
+// 					'content': content,
+// 					'html': html
+// 				}
+// 			})
+
+// 		}).then(function() {
+// 			runUpdateHTML()
+// 		})
+
+
+
+// 	}).catch(function(e) {
+// 		console.log(e)
+// 	})
+// }
 
 //runUpdateImg();
 
-function runUpdateImg() {
-	db.open(dbTable).then(function(collection) {
-		return collection.find({
-			thumbnail: null
-		}).sort({
-			id: -1
-		}).limit(1).toArray()
-	}).then(function(arr) {
-		if (arr.length == 0) {
-			console.log("==finish==")
-			throw db.close()
-		}
-		var json = arr[0];
+// function runUpdateImg() {
+// 	db.open(dbTable).then(function(collection) {
+// 		return collection.find({
+// 			thumbnail: null
+// 		}).sort({
+// 			id: -1
+// 		}).limit(1).toArray()
+// 	}).then(function(arr) {
+// 		if (arr.length == 0) {
+// 			console.log("==finish==")
+// 			throw db.close()
+// 		}
+// 		var json = arr[0];
 
-		return (json);
-	}).then(function(json) {
-		var $ = cheerio.load(json.html);
-		var thumbnail = ($("img").attr("src"));
-		thumbnail = (thumbnail ? thumbnail : "");
-		console.log(thumbnail)
-		console.log("img update:", json.url)
-		return db.collection.update({
-				'id': json.id
-			}, {
-				$set: {
-					'thumbnail': thumbnail,
-				}
-			})
-			//db.close();
-	}).then(function() {
-		runUpdateImg()
-	}).catch(function(e) {
-		console.log(e);
-		db.close();
-	})
-}
+// 		return (json);
+// 	}).then(function(json) {
+// 		var $ = cheerio.load(json.html);
+// 		var thumbnail = ($("img").attr("src"));
+// 		thumbnail = (thumbnail ? thumbnail : "");
+// 		console.log(thumbnail)
+// 		console.log("img update:", json.url)
+// 		return db.collection.update({
+// 				'id': json.id
+// 			}, {
+// 				$set: {
+// 					'thumbnail': thumbnail,
+// 				}
+// 			})
+// 			//db.close();
+// 	}).then(function() {
+// 		runUpdateImg()
+// 	}).catch(function(e) {
+// 		console.log(e);
+// 		db.close();
+// 	})
+// }
