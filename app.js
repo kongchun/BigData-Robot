@@ -8,4 +8,4 @@ new cronJob('1 0 0 * * *', function() {
 		spawn("python", ["../BigData-ML/MLmain.py"], {})
 	})
 }, null, true, 'Asia/Shanghai');
-robot_dataunion.updateArticle()
+robot_dataunion.updateArticle();

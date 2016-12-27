@@ -22,6 +22,7 @@ var Page = {
 			db.close();
 			console.log("finish")
 		}).catch(function(e) {
+			db.close();
 			console.log(e)
 		})
 	},
@@ -232,6 +233,7 @@ var Robot = {
 		Page.loadAll().then(function() {
 			return Article.load()
 		}).catch(function(e) {
+			db.close();
 			console.log(e);
 		})
 	},
@@ -241,6 +243,7 @@ var Robot = {
 		}).then(function() {
 			return Article.load()
 		}).catch(function(e) {
+			db.close();
 			console.log(e);
 		})
 	}
