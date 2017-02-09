@@ -1,11 +1,24 @@
-//process.env.DB_URL = '10.82.0.1';
-var robot_dataunion = require('./robot_dataunion.js');
+var Robot = require('./robot.js');
+var UpdateArticle = require('./datayuan/update/UpdateArticle.js');
 var cronJob = require("cron").CronJob;
-var spawn = require('child_process').spawn;
+var  spawn = require( 'child_process').spawn;
 
+//更新datayuan的调用方�?
+//UpdateArticle.getUpdateAticleList
 new cronJob('1 0 0 * * *', function() {
-	robot_dataunion.updateArticle().then(function() {
-		spawn("python", ["../BigData-ML/MLmain.py"], {})
+	Robot.updateArticle().then(function(){
+		UpdateArticle.getUpdateAticleList().then(function(){
+			console.log("python start");
+			spawn("python",["D:/bigData/BigData-ML/MLmain.py"],{});
+			console.log("python end");
+		})
 	})
 }, null, true, 'Asia/Shanghai');
-robot_dataunion.updateArticle();
+Robot.updateArticle().then(function(){
+		UpdateArticle.getUpdateAticleList().then(function(){
+			console.log("python start");
+			spawn("python",["D:/bigData/BigData-ML/MLmain.py"],{});
+			console.log("python end");
+		})
+	})
+//spawn("python",["D:/bigData/BigData-ML/MLmain.py"],{})
