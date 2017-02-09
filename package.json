@@ -1,18 +1,23 @@
 {
-	"name": "web_robot",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"author": "kongchun",
-	"license": "ISC",
-	"dependencies": {
-		"cron": "^1.1.1"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/kongchun/BigData-Robot.git"
-	}
+  "name": "web_robot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kongchun",
+  "license": "ISC",
+  "dependencies": {
+    "bufferhelper": "^0.2.1",
+    "cheerio": "^0.22.0",
+    "cron": "^1.1.1",
+    "iconv-lite": "^0.4.15",
+    "mongodb": "^2.2.22",
+    "request": "^2.79.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kongchun/BigData-Robot.git"
+  }
 }
