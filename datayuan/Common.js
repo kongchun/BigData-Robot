@@ -39,10 +39,19 @@ var Common = {
     },
 	formatHtml:function(html){
         var newHtml = html.replace(/src="\/u\/cms/g,'src="http://www.datayuan.cn/u/cms');
-        var afterHead = this.formatHtmlHead(newHtml);
+        var afterImg = this.formatImg(newHtml);
+        var afterHead = this.formatHtmlHead(afterImg);
         var afterFoot = this.formatHtmlFoot(afterHead);
 	    return afterFoot;
 	},
+    //将爬取到的图片样式去掉，并添加响应式class类名
+    formatImg:function(html){
+            var newContent= html.replace(/<img[^>]*>/gi,function(match,capture){
+            var match = match.replace(/style=\"(.*)\"/gi, 'class="img-responsive"');
+            return match;
+        });
+        return newContent;
+    },
     //格式化头部来源信息
     formatHtmlHead:function(html){
         var firstIndexP = html.indexOf("<p>");
