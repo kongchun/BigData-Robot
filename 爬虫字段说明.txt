@@ -1,0 +1,18 @@
+网站爬到的数据需要转化成统一的格式，相同的字段进行存储，本文对各字段进行说明：
+
+id：int（唯一，必须使用int型，必须）
+title:string (文章标题，需要转化特殊字符的uncoide编码，必须)
+author:string(文章作者，非必须)
+createDate:data(日期类型字符串,文章的发表日期，原文不存在时取爬去时间作为文章发布时间，必须)
+abstract:arrary(字符串数组，文章关键字，非必须)
+thumbnail:string(字符串，资讯页面图片url，必须)
+daodu:string(字符串，文章重点段，非必须)
+html:string（字符串，文章html标签内容，不需要做处理，需要完整爬取下来，必须）
+content:string(字符串，文章去除html标签，文章的空格需要保留，必须uncoide编码转化正常的文字，需要去除文章的标点符号、及文章中出现的url、文章中无管的文字内容，需要对文章进行完整的去噪处理，必须)
+url:string(字符串，文章原文url，必须)
+isnew:boolean(新爬去的文章统一制成true，必须)
+loaded:true(新爬去的文章统一制成true，非必须)
+read:int(原文章阅读数，不存在时记为0，必须)
+ext1:null(预留字段1)
+ext2:null(预留字段2)
+
